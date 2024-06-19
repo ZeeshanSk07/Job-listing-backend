@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const UserRoute = require('./routes/UserRoute');
+const jobRoute = require('./routes/jobRoute');
 
 dotenv.config();
 
@@ -17,6 +18,7 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
   );
 
 app.use('/user', UserRoute);
+app.use('/job', jobRoute);
 
 app.get('/health', (req, res) => {
   res.json({
