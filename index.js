@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const UserRoute = require('./routes/UserRoute');
 
 dotenv.config();
 
@@ -9,13 +10,13 @@ const app = express();
 
 app.use(express.json());
 
-mongoose.connect(process.env.MONGO_URL)
-  .then(() => {
+mongoose.connect(process.env.MONGO_URL).then(() => {
     console.log('Database connected');
-  })
-  .catch(err => 
+  }).catch(err => 
     console.log('Error connecting to database')
   );
+
+app.use('/user', UserRoute);
 
 app.get('/health', (req, res) => {
   res.json({
