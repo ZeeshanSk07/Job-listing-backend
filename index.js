@@ -4,12 +4,13 @@ const dotenv = require('dotenv');
 const UserRoute = require('./routes/UserRoute');
 const jobRoute = require('./routes/jobRoute');
 const errorHandler = require('./middleware/errorHandler');
+const cors = require('cors');
 
 dotenv.config();
 
 const port = 3000;
 const app = express();
-
+app.use(cors());
 app.use(express.json());
 
 
