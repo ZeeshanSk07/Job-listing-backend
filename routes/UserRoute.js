@@ -1,6 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
-
+const jwt = require('jsonwebtoken');
 const router = express.Router();
 const User = require('../model/User');
 router.get('/', (req, res) => {
@@ -35,22 +35,7 @@ router.post('/register', async (req, res) => {
         });
     }
 
-    try {
-
-
-        await newUser.save();
-        res.status(201).json({
-            message: 'User created successfully',
-            user: newUser
-        });
-        // we need to handle cases where email already exists 
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({
-            message: 'Internal Server Error',
-            error,
-        });
-    }
+   
 });
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
@@ -59,10 +44,17 @@ router.post('/login', async (req, res) => {
         const existingUser = await User.findOne({ email: email });
 
         if (existingUser) {
-            if (existingUser.password == password) {
+            const isPasswordCorrect = await bcrypt.compare(password, existingUser.password);
+            if (isPasswordCorrect) {
+                const token = jwt.sign(
+                    { email: existingUser.email }, 
+                    'secret', 
+                    { expiresIn: '1h' } 
+                );
                 res.status(200).json({
                     message: 'Login successful',
-                    email: existingUser.email
+                    email: existingUser.email,
+                    token
                 });
             } else {
                 res.status(400).json({
@@ -81,5 +73,4 @@ router.post('/login', async (req, res) => {
         });
     }
 });
-
 module.exports = router;
