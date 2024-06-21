@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const UserRoute = require('./routes/UserRoute');
 const jobRoute = require('./routes/jobRoute');
-const verifyToken = require('./middleware/verifyToken');
 const errorHandler = require('./middleware/errorHandler');
 
 dotenv.config();
@@ -22,7 +21,7 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
   );
 
 app.use('/user', UserRoute);
-app.use('/job',verifyToken, jobRoute);
+app.use('/job', jobRoute);
 
 app.get('/health', (req, res) => {
   // res.send
